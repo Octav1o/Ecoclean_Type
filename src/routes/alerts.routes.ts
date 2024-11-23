@@ -65,7 +65,8 @@ alertRoutes.put('/updateAlert', async (req: Request, res: Response) => {
             : res.status(500).send({message: "An error ocurred while updating the alert"});
 
     } catch (error:any) {
-        
+        console.error(error.message);
+        res.status(500).send(error.message);
     }
 
 });

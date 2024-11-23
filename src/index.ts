@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import { userRoutes } from './routes/users.routes';
 import { connectToDatabase } from './services/database.service';
 import { alertRoutes } from './routes/alerts.routes';
+import { containerRoutes } from './routes/containers.routes';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ connectToDatabase()
     .then(() => {
         app.use("/api/users", userRoutes);
         app.use("/api/alerts", alertRoutes);
+        app.use("/api/containers", containerRoutes);
 
         app.listen(PORT, () => {
             console.log(`App listening on PORT: ${PORT}`);
