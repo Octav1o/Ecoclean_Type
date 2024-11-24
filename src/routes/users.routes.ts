@@ -6,6 +6,7 @@ import { collections } from "../services/database.service";
 import User from "../models/user";
 import { checkSchema, validationResult } from "express-validator";
 import { loginValidator, userValidator } from "../middlewares/user.validator";
+import { ObjectId } from "mongodb";
 
 export const userRoutes = express.Router();
 
@@ -130,4 +131,31 @@ userRoutes.post("/login", async (req: Request, res: Response): Promise<Response>
     console.error("An error occurred", error.message);
     return res.status(500).json({ error: "An error occurred" });
   }
+});
+
+userRoutes.delete('/:id', async (req: Request, res: Response) => {
+  
+  const { id } = req.params;
+
+  try {
+    
+
+    const errors = validationResult(req);
+      if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+
+      const existingUser = await collections.users?.findOne({ _id: new ObjectId(id) });
+
+      if(!existingUser) return res.status(404).json({ message: 'User not found' });
+
+      const result = await collections.users?.updateOne({ _id: new ObjectId(id) }, { $set: { status: false}});
+
+      result
+       ? res.status(200).json({ message: "User deleted successfully"})
+        : res.status(500).send({ message: "An error occurred while deleting the user"});
+
+  } catch (error: any) {
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+
 });
