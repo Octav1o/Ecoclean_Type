@@ -24,7 +24,7 @@ export async function connectToDatabase() {
         process.env.CONTAINER_COLLECTION_NAME?? ""
     );
     const subscriptionCollection: mongoDB.Collection = db.collection(
-        process.env.CONTAINER_COLLECTION_NAME?? ""
+        process.env.SUBSCRIPTIONS_COLLECTION_NAME ?? ""
     );
 
     collections.users = userCollection;

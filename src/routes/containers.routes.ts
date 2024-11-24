@@ -2,9 +2,9 @@ import express, { Request, Response } from "express";
 import { collections } from "../services/database.service";
 import TrashBin from "../models/container";
 ("../models/trashBin");
-import { checkSchema, validationResult } from "express-validator";
+import { validationResult } from "express-validator";
 import { ObjectId } from "mongodb";
-import Container from "../models/container";
+// import Container from "../models/container";
 
 export const containerRoutes = express.Router();
 
@@ -28,7 +28,8 @@ containerRoutes.post("/", async (req: Request, res: Response) => {
     const newContainer = {
       lat,
       lon,
-      alert: new ObjectId(alertId)
+      alert: new ObjectId(alertId),
+      status: true
     };
 
     const result = await collections.containers?.insertOne(newContainer);
@@ -69,11 +70,13 @@ containerRoutes.get("/", async (req: Request, res: Response) => {
           _id: 1,
           lat: 1,
           lon: 1,
+          status: 1,
           alertDetails: 1
         }
       }
     ]).toArray();
 
+    console.log(containers);
     return res.status(200).send(containers);
 
   } catch (error:any) {
@@ -112,6 +115,7 @@ containerRoutes.get('/:id', async (req: Request, res: Response) => {
           _id: 1,
           lat: 1,
           lon: 1,
+          status: 1,
           alertDetails: 1
         }
       }
@@ -153,4 +157,29 @@ containerRoutes.put('/:id', async (req: Request, res: Response) => {
     console.error(error);
     return res.status(500).send(error.message);
   }
+})
+
+containerRoutes.delete('/:id', async (req: Request, res: Response) => {
+
+  const { id } = req.params;
+
+  try {
+    
+    const existingContainer = await collections.containers?.findOne({ _id: new ObjectId(id)});
+
+    console.log(existingContainer);
+
+    if(!existingContainer) return res.status(404).json({message: 'Container not found'});
+
+    const result = await collections.containers?.updateOne({_id: new ObjectId(id)}, {$set: { status: false}});
+
+    result
+     ? res.status(200).json({ message: "Container deleted successfully"})
+      : res.status(500).send({ message: "An error occurred while deleting the container"});
+
+  } catch (error:any) {
+    console.error(error);
+    return res.status(500).send(error.message);
+  }
+
 })
