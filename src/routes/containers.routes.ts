@@ -45,11 +45,54 @@ containerRoutes.post("/", async (req: Request, res: Response) => {
 });
 
 
+// containerRoutes.get("/", async (req: Request, res: Response) => {
+
+//   try {
+
+//     // const containers = await collections.containers?.find<Container>({}).toArray();
+//     const containers = await collections.containers?.aggregate([
+//       {
+//         $lookup: {
+//           from: 'alerts',
+//           localField: 'alert',
+//           foreignField: '_id',
+//           as: 'alertDetails'
+//         }
+//       },
+//       {
+//         $unwind: {
+//           path: '$alertDetails',
+//           preserveNullAndEmptyArrays: true
+//         }
+//       },
+//       {
+//         $project: {
+//           _id: 1,
+//           lat: 1,
+//           lon: 1,
+//           status: 1,
+//           alertDetails: 1
+//         }
+//       }
+//     ]).toArray();
+
+//     console.log(containers);
+//     return res.status(200).send(containers);
+
+//   } catch (error:any) {
+    
+//     console.error(error);
+//     return res.status(500).send(error.message);
+//   }
+
+// });
+
 containerRoutes.get("/", async (req: Request, res: Response) => {
-
   try {
+    const { status } = req.query;
 
-    // const containers = await collections.containers?.find<Container>({}).toArray();
+    const matchStage = status ? { 'alertDetails.status': status } : {};
+
     const containers = await collections.containers?.aggregate([
       {
         $lookup: {
@@ -66,6 +109,9 @@ containerRoutes.get("/", async (req: Request, res: Response) => {
         }
       },
       {
+        $match: matchStage
+      },
+      {
         $project: {
           _id: 1,
           lat: 1,
@@ -80,11 +126,9 @@ containerRoutes.get("/", async (req: Request, res: Response) => {
     return res.status(200).send(containers);
 
   } catch (error:any) {
-    
     console.error(error);
     return res.status(500).send(error.message);
   }
-
 });
 
 containerRoutes.get('/:id', async (req: Request, res: Response) => {
