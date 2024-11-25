@@ -215,7 +215,8 @@ containerRoutes.delete('/:id', async (req: Request, res: Response) => {
 
     if(!existingContainer) return res.status(404).json({message: 'Container not found'});
 
-    const result = await collections.containers?.updateOne({_id: new ObjectId(id)}, {$set: { status: false}});
+    // const result = await collections.containers?.updateOne({_id: new ObjectId(id)}, {$set: { status: false}});
+    const result = await collections.containers?.deleteOne({ _id: new ObjectId(id)});
 
     result
      ? res.status(200).json({ message: "Container deleted successfully"})
