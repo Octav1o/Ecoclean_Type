@@ -32,9 +32,15 @@ alertRoutes.post('/', async (req: Request, res: Response) => {
         
 
         if (existingAlert) {
-            res.status(400).json({message: `Alerta existente`});
-            return;
-        };
+            const updateAlert = await collections.alerts?.updateOne(
+                {sensorId: alert.sensorId}, 
+                {$set: {status: 'critico', message: 'Contenedor en estado critico'}}
+            );
+            return updateAlert
+            ? res.status(201).json({message: "Alert updated successfully"})
+            : res.status(500).send({message: "An error ocurred while updating the alert"});
+            
+        }
 
         const result = await collections.alerts?.insertOne(newAlert);
 
@@ -53,7 +59,7 @@ alertRoutes.put('/updateAlert', async (req: Request, res: Response) => {
     try {
         
         const {message, sensorId, status} = req.body as Alert;
-
+        console.log(req.body);
         const existingAlert = await collections.alerts?.findOne({sensorId: sensorId});
 
         if (!existingAlert) res.status(404).send(`We couldn't find the alert with sensorId ${sensorId}`);
