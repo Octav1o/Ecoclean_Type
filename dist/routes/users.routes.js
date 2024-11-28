@@ -26,10 +26,10 @@ exports.userRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
     var _a;
     try {
         const users = yield ((_a = database_service_1.collections.users) === null || _a === void 0 ? void 0 : _a.find({}).toArray());
-        res.status(200).send(users);
+        return res.status(200).send(users);
     }
     catch (error) {
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 }));
 exports.userRoutes.post("/", (0, express_validator_1.checkSchema)(user_validator_1.userValidator), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -66,7 +66,7 @@ exports.userRoutes.post("/", (0, express_validator_1.checkSchema)(user_validator
                 },
             };
             jsonwebtoken_1.default.sign(payload, (_c = process.env.TOKEN) !== null && _c !== void 0 ? _c : "", { expiresIn: "1 day" }, (err, token) => {
-                result
+                return result
                     ? res.status(201).json({
                         message: `Successfully created a new user with id ${result.insertedId}`,
                         accessToken: token,
@@ -97,7 +97,7 @@ exports.userRoutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
             return res.status(400).json({ error: "Wrong mail or password, try again" });
         }
         if (yield bcrypt_1.default.compare(password, existingUser === null || existingUser === void 0 ? void 0 : existingUser.password)) {
-            res.cookie("session", "secure-session-token", {
+            return res.cookie("session", "secure-session-token", {
                 httpOnly: true,
                 secure: true,
             });
@@ -136,7 +136,7 @@ exports.userRoutes.delete('/:id', (req, res) => __awaiter(void 0, void 0, void 0
         if (!existingUser)
             return res.status(404).json({ message: 'User not found' });
         const result = yield ((_b = database_service_1.collections.users) === null || _b === void 0 ? void 0 : _b.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: { status: false } }));
-        result
+        return result
             ? res.status(200).json({ message: "User deleted successfully" })
             : res.status(500).send({ message: "An error occurred while deleting the user" });
     }

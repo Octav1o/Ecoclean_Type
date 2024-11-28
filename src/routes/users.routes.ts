@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 import { collections } from "../services/database.service";
 import User from "../models/user";
 import { checkSchema, validationResult } from "express-validator";
-import { loginValidator, userValidator } from "../middlewares/user.validator";
+import { userValidator } from "../middlewares/user.validator";
 import { ObjectId } from "mongodb";
 
 export const userRoutes = express.Router();
@@ -14,9 +14,9 @@ userRoutes.get("/", async (req: Request, res: Response) => {
   try {
     const users = await collections.users?.find<User>({}).toArray();
 
-    res.status(200).send(users);
+    return res.status(200).send(users);
   } catch (error: any) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 });
 
@@ -64,7 +64,7 @@ userRoutes.post(
           process.env.TOKEN ?? "",
           { expiresIn: "1 day" },
           (err, token) => {
-            result
+            return result
               ? res.status(201).json({
                   message: `Successfully created a new user with id ${result.insertedId}`,
                   accessToken: token,
@@ -99,7 +99,7 @@ userRoutes.post("/login", async (req: Request, res: Response): Promise<Response>
     }
 
     if (await bcrypt.compare(password, existingUser?.password)) {
-      res.cookie("session", "secure-session-token", {
+      return res.cookie("session", "secure-session-token", {
         httpOnly: true,
         secure: true,
       });
@@ -149,7 +149,7 @@ userRoutes.delete('/:id', async (req: Request, res: Response) => {
 
       const result = await collections.users?.updateOne({ _id: new ObjectId(id) }, { $set: { status: false}});
 
-      result
+      return result
        ? res.status(200).json({ message: "User deleted successfully"})
         : res.status(500).send({ message: "An error occurred while deleting the user"});
 

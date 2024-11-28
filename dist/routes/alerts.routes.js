@@ -21,10 +21,10 @@ exports.alertRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, fun
     var _a;
     try {
         const alerts = yield ((_a = database_service_1.collections.alerts) === null || _a === void 0 ? void 0 : _a.find({}).toArray());
-        res.status(200).send(alerts);
+        return res.status(200).send(alerts);
     }
     catch (error) {
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 }));
 exports.alertRoutes.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -46,13 +46,13 @@ exports.alertRoutes.post('/', (req, res) => __awaiter(void 0, void 0, void 0, fu
                 : res.status(500).send({ message: "An error ocurred while updating the alert" });
         }
         const result = yield ((_c = database_service_1.collections.alerts) === null || _c === void 0 ? void 0 : _c.insertOne(newAlert));
-        result
+        return result
             ? res.status(201).json({ message: "Alert created successfully" })
             : res.status(500).send({ message: "An error ocurred trying to create the alert" });
     }
     catch (error) {
         console.error(error);
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 }));
 exports.alertRoutes.put('/updateAlert', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -62,14 +62,14 @@ exports.alertRoutes.put('/updateAlert', (req, res) => __awaiter(void 0, void 0, 
         console.log(req.body);
         const existingAlert = yield ((_a = database_service_1.collections.alerts) === null || _a === void 0 ? void 0 : _a.findOne({ sensorId: sensorId }));
         if (!existingAlert)
-            res.status(404).send(`We couldn't find the alert with sensorId ${sensorId}`);
+            return res.status(404).send(`We couldn't find the alert with sensorId ${sensorId}`);
         const result = yield ((_b = database_service_1.collections.alerts) === null || _b === void 0 ? void 0 : _b.updateOne({ sensorId: sensorId }, { $set: { message: message, status: status } }));
-        result
+        return result
             ? res.status(201).json({ message: "Alert updated successfully" })
             : res.status(500).send({ message: "An error ocurred while updating the alert" });
     }
     catch (error) {
         console.error(error.message);
-        res.status(500).send(error.message);
+        return res.status(500).send(error.message);
     }
 }));
