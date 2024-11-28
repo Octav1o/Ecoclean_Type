@@ -8,7 +8,7 @@ import { ObjectId } from "mongodb";
 
 export const containerRoutes = express.Router();
 
-containerRoutes.post("/", async (req: Request, res: Response) => {
+containerRoutes.post("/", async (req: Request, res: Response): Promise<any> => {
   try {
 
     const errors = validationResult(req);
@@ -87,7 +87,7 @@ containerRoutes.post("/", async (req: Request, res: Response) => {
 
 // });
 
-containerRoutes.get("/", async (req: Request, res: Response) => {
+containerRoutes.get("/", async (req: Request, res: Response): Promise<any> => {
   try {
     const { status } = req.query;
 
@@ -131,7 +131,7 @@ containerRoutes.get("/", async (req: Request, res: Response) => {
   }
 });
 
-containerRoutes.get('/:id', async (req: Request, res: Response) => {
+containerRoutes.get('/:id', async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
 
   try {
@@ -176,7 +176,7 @@ containerRoutes.get('/:id', async (req: Request, res: Response) => {
 
 });
 
-containerRoutes.put('/:id', async (req: Request, res: Response) => {
+containerRoutes.put('/:id', async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
   const { lat, lon } = req.body;
 
@@ -203,7 +203,7 @@ containerRoutes.put('/:id', async (req: Request, res: Response) => {
   }
 })
 
-containerRoutes.delete('/:id', async (req: Request, res: Response) => {
+containerRoutes.delete('/:id', async (req: Request, res: Response): Promise<any> => {
 
   const { id } = req.params;
 

@@ -14,7 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.alertRoutes = void 0;
 const express_1 = __importDefault(require("express"));
-// import { ObjectId } from "mongodb";
 const database_service_1 = require("../services/database.service");
 exports.alertRoutes = express_1.default.Router();
 exports.alertRoutes.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {

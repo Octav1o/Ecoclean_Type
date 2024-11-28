@@ -10,7 +10,7 @@ import { ObjectId } from "mongodb";
 
 export const userRoutes = express.Router();
 
-userRoutes.get("/", async (req: Request, res: Response) => {
+userRoutes.get("/", async (req: Request, res: Response): Promise<any> => {
   try {
     const users = await collections.users?.find<User>({}).toArray();
 
@@ -23,7 +23,7 @@ userRoutes.get("/", async (req: Request, res: Response) => {
 userRoutes.post(
   "/",
   checkSchema(userValidator),
-  async (req: Request, res: Response): Promise<Response> => {
+  async (req: Request, res: Response): Promise<any> => {
     try {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -39,7 +39,7 @@ userRoutes.post(
           lastname: user.lastname,
           mail: user.mail,
           password: hashedPassword,
-          isAdmin: false ?? user.isAdmin,
+          isAdmin: user.isAdmin ?? false ,
           status: true,
         };
 
@@ -83,7 +83,7 @@ userRoutes.post(
   }
 );
 
-userRoutes.post("/login", async (req: Request, res: Response): Promise<Response> => {
+userRoutes.post("/login", async (req: Request, res: Response): Promise<any> => {
   try {
     const { mail, password } = req.body as User;
 
@@ -99,7 +99,7 @@ userRoutes.post("/login", async (req: Request, res: Response): Promise<Response>
     }
 
     if (await bcrypt.compare(password, existingUser?.password)) {
-      return res.cookie("session", "secure-session-token", {
+      res.cookie("session", "secure-session-token", {
         httpOnly: true,
         secure: true,
       });
@@ -133,7 +133,7 @@ userRoutes.post("/login", async (req: Request, res: Response): Promise<Response>
   }
 });
 
-userRoutes.delete('/:id', async (req: Request, res: Response) => {
+userRoutes.delete('/:id', async (req: Request, res: Response): Promise<any> => {
   
   const { id } = req.params;
 

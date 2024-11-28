@@ -33,7 +33,7 @@ exports.userRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 }));
 exports.userRoutes.post("/", (0, express_validator_1.checkSchema)(user_validator_1.userValidator), (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     try {
         const errors = (0, express_validator_1.validationResult)(req);
         if (!errors.isEmpty()) {
@@ -48,10 +48,10 @@ exports.userRoutes.post("/", (0, express_validator_1.checkSchema)(user_validator
                 lastname: user.lastname,
                 mail: user.mail,
                 password: hashedPassword,
-                isAdmin: false !== null && false !== void 0 ? false : user.isAdmin,
+                isAdmin: (_a = user.isAdmin) !== null && _a !== void 0 ? _a : false,
                 status: true,
             };
-            const existingUser = yield ((_a = database_service_1.collections.users) === null || _a === void 0 ? void 0 : _a.findOne({
+            const existingUser = yield ((_b = database_service_1.collections.users) === null || _b === void 0 ? void 0 : _b.findOne({
                 mail: newUser.mail,
             }));
             if (existingUser) {
@@ -59,13 +59,13 @@ exports.userRoutes.post("/", (0, express_validator_1.checkSchema)(user_validator
                     .status(400)
                     .json({ message: "User with this email already exists" });
             }
-            const result = yield ((_b = database_service_1.collections.users) === null || _b === void 0 ? void 0 : _b.insertOne(newUser));
+            const result = yield ((_c = database_service_1.collections.users) === null || _c === void 0 ? void 0 : _c.insertOne(newUser));
             const payload = {
                 user: {
                     id: result === null || result === void 0 ? void 0 : result.insertedId,
                 },
             };
-            jsonwebtoken_1.default.sign(payload, (_c = process.env.TOKEN) !== null && _c !== void 0 ? _c : "", { expiresIn: "1 day" }, (err, token) => {
+            jsonwebtoken_1.default.sign(payload, (_d = process.env.TOKEN) !== null && _d !== void 0 ? _d : "", { expiresIn: "1 day" }, (err, token) => {
                 return result
                     ? res.status(201).json({
                         message: `Successfully created a new user with id ${result.insertedId}`,
@@ -97,7 +97,7 @@ exports.userRoutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
             return res.status(400).json({ error: "Wrong mail or password, try again" });
         }
         if (yield bcrypt_1.default.compare(password, existingUser === null || existingUser === void 0 ? void 0 : existingUser.password)) {
-            return res.cookie("session", "secure-session-token", {
+            res.cookie("session", "secure-session-token", {
                 httpOnly: true,
                 secure: true,
             });

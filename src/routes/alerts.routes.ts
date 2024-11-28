@@ -1,11 +1,10 @@
 import express, { Request, Response } from "express";
-// import { ObjectId } from "mongodb";
-import {collections} from "../services/database.service";
+import { collections } from "../services/database.service";
 import Alert from "../models/alert";
 
 export const alertRoutes = express.Router();
 
-alertRoutes.get('/', async (req: Request, res: Response) => {
+alertRoutes.get('/', async (req: Request, res: Response): Promise<any> => {
     try {
         
         const alerts = await collections.alerts?.find<Alert>({}).toArray();
@@ -16,8 +15,7 @@ alertRoutes.get('/', async (req: Request, res: Response) => {
     }
 });
 
-
-alertRoutes.post('/', async (req: Request, res: Response) => {
+alertRoutes.post('/', async (req: Request, res: Response): Promise<any> => {
     try {
         const alert = req.body as Alert;
         console.log(alert);
@@ -54,7 +52,7 @@ alertRoutes.post('/', async (req: Request, res: Response) => {
 });
 
 
-alertRoutes.put('/updateAlert', async (req: Request, res: Response) => {
+alertRoutes.put('/updateAlert', async (req: Request, res: Response): Promise<any> => {
 
     try {
         
