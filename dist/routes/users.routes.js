@@ -99,7 +99,7 @@ exports.userRoutes.post("/login", (req, res) => __awaiter(void 0, void 0, void 0
         if (yield bcrypt_1.default.compare(password, existingUser === null || existingUser === void 0 ? void 0 : existingUser.password)) {
             res.cookie("session", "secure-session-token", {
                 httpOnly: true,
-                secure: false,
+                secure: true,
             });
             console.log(`User with mail "${mail}" logged in successfully`);
             const accessToken = jsonwebtoken_1.default.sign({ userId: existingUser === null || existingUser === void 0 ? void 0 : existingUser.id, name: existingUser === null || existingUser === void 0 ? void 0 : existingUser.firstname }, (_b = process.env.TOKEN) !== null && _b !== void 0 ? _b : "", { expiresIn: "1h" });

@@ -101,7 +101,7 @@ userRoutes.post("/login", async (req: Request, res: Response): Promise<any> => {
     if (await bcrypt.compare(password, existingUser?.password)) {
       res.cookie("session", "secure-session-token", {
         httpOnly: true,
-        secure: false,
+        secure: true,
       });
 
       console.log(`User with mail "${mail}" logged in successfully`);
